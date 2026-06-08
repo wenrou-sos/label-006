@@ -6,6 +6,7 @@ export interface BusinessType {
   prefix: string;
   color: string;
   description: string;
+  avgServiceMinutes: number;
 }
 
 export interface Ticket {

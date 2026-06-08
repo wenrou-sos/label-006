@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Clock, Users, Volume2 } from "lucide-react";
+import { ArrowLeft, Clock, Users, Volume2, Timer } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQueueStore } from "@/store/queueStore";
 import { usePolling } from "@/hooks/usePolling";
 import type { Ticket, TicketStatus } from "@/types";
+import { estimateWaitTime, formatWaitTime } from "@/lib/utils";
 
 const getStatusColor = (status: TicketStatus) => {
   switch (status) {
@@ -225,32 +226,40 @@ export default function DisplayPage() {
             <div className="space-y-4">
               {businessTypes.map((bt) => {
                 const count = getWaitingCount(bt.code);
+                const estMinutes = estimateWaitTime(count, bt.avgServiceMinutes);
                 return (
                   <div
                     key={bt.code}
-                    className="flex items-center justify-between bg-slate-900/50 rounded-2xl p-4"
+                    className="bg-slate-900/50 rounded-2xl p-4"
                   >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-12 h-12 rounded-xl ${bt.color} flex items-center justify-center text-2xl font-bold text-white`}
-                      >
-                        {bt.prefix}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`w-12 h-12 rounded-xl ${bt.color} flex items-center justify-center text-2xl font-bold text-white`}
+                        >
+                          {bt.prefix}
+                        </div>
+                        <div>
+                          <div className="text-xl font-bold text-white">
+                            {bt.name}
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xl font-bold text-white">
-                          {bt.name}
+                      <div className="text-right">
+                        <div
+                          className={`text-3xl font-black ${
+                            count > 5 ? "text-yellow-400" : "text-green-400"
+                          }`}
+                        >
+                          {count} <span className="text-base font-medium text-slate-400">人</span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div
-                        className={`text-4xl font-black ${
-                          count > 5 ? "text-yellow-400" : "text-green-400"
-                        }`}
-                      >
-                        {count}
-                      </div>
-                      <div className="text-sm text-slate-400">人</div>
+                    <div className="flex items-center gap-2 text-amber-300 pl-16">
+                      <Timer size={18} />
+                      <span className="text-lg font-medium">
+                        预估等待 {formatWaitTime(estMinutes)}
+                      </span>
                     </div>
                   </div>
                 );

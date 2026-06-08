@@ -11,11 +11,13 @@ import {
   Clock,
   QrCode,
   CheckCircle2,
+  Timer,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQueueStore } from "@/store/queueStore";
 import type { Ticket } from "@/types";
 import type { LucideIcon } from "lucide-react";
+import { estimateWaitTime, formatWaitTime } from "@/lib/utils";
 
 const iconMap: Record<string, LucideIcon> = {
   social_security: HeartHandshake,
@@ -50,6 +52,7 @@ export default function TicketPage() {
 
   if (selectedTicket && bt) {
     const waitingCount = getWaitingCount(selectedTicket.businessTypeCode);
+    const estMinutes = estimateWaitTime(waitingCount, bt.avgServiceMinutes);
     return (
       <div className="min-h-screen bg-gradient-to-br from-government-700 via-government-800 to-government-950 flex flex-col">
         <div className="p-8">
@@ -84,18 +87,25 @@ export default function TicketPage() {
               </div>
 
               <div className="p-10 space-y-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="bg-slate-50 rounded-2xl p-6 text-center">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-50 rounded-2xl p-5 text-center">
                     <div className="text-slate-500 text-sm mb-2">业务类型</div>
-                    <div className="text-2xl font-bold text-slate-800">
+                    <div className="text-xl font-bold text-slate-800">
                       {bt.name}
                     </div>
                   </div>
-                  <div className="bg-slate-50 rounded-2xl p-6 text-center">
+                  <div className="bg-slate-50 rounded-2xl p-5 text-center">
                     <div className="text-slate-500 text-sm mb-2">前面等待</div>
-                    <div className="text-2xl font-bold text-government-700 flex items-center justify-center gap-2">
-                      <Users size={24} />
-                      {waitingCount} 人
+                    <div className="text-xl font-bold text-government-700 flex items-center justify-center gap-1">
+                      <Users size={22} />
+                      {waitingCount}
+                    </div>
+                  </div>
+                  <div className="bg-slate-50 rounded-2xl p-5 text-center">
+                    <div className="text-slate-500 text-sm mb-2">预估等待</div>
+                    <div className="text-xl font-bold text-amber-600 flex items-center justify-center gap-1">
+                      <Timer size={22} />
+                      {formatWaitTime(estMinutes)}
                     </div>
                   </div>
                 </div>
@@ -165,6 +175,7 @@ export default function TicketPage() {
           {businessTypes.map((bt) => {
             const Icon = iconMap[bt.code] || Building2;
             const waiting = getWaitingCount(bt.code);
+            const estMinutes = estimateWaitTime(waiting, bt.avgServiceMinutes);
             return (
               <button
                 key={bt.code}
@@ -185,16 +196,22 @@ export default function TicketPage() {
                 <p className="text-slate-500 text-xl mb-6 leading-relaxed">
                   {bt.description}
                 </p>
-                <div className="flex items-center justify-between">
+                <div className="space-y-3">
                   <div className="flex items-center gap-2 text-slate-600">
                     <Users size={24} />
                     <span className="text-xl font-medium">
                       当前等待 <span className="text-3xl font-bold text-government-700">{waiting}</span> 人
                     </span>
                   </div>
-                  <div className="text-5xl font-bold text-slate-200 group-hover:text-government-200 transition-colors">
-                    {bt.prefix}
+                  <div className="flex items-center gap-2 text-amber-600">
+                    <Timer size={24} />
+                    <span className="text-xl font-medium">
+                      预估等待 <span className="text-2xl font-bold">{formatWaitTime(estMinutes)}</span>
+                    </span>
                   </div>
+                </div>
+                <div className="absolute right-8 bottom-8 text-6xl font-bold text-slate-200 group-hover:text-government-200 transition-colors">
+                  {bt.prefix}
                 </div>
                 <div
                   className={`absolute -bottom-16 -right-16 w-48 h-48 rounded-full ${bt.color} opacity-5 group-hover:opacity-10 transition-opacity`}

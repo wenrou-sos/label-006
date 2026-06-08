@@ -7,6 +7,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "A",
     color: "bg-blue-600",
     description: "养老保险、医疗保险、失业保险等",
+    avgServiceMinutes: 8,
   },
   {
     code: "tax",
@@ -14,6 +15,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "B",
     color: "bg-emerald-600",
     description: "纳税申报、发票办理、税务登记等",
+    avgServiceMinutes: 5,
   },
   {
     code: "industry",
@@ -21,6 +23,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "C",
     color: "bg-amber-600",
     description: "企业注册、变更登记、营业执照等",
+    avgServiceMinutes: 10,
   },
   {
     code: "real_estate",
@@ -28,6 +31,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "D",
     color: "bg-rose-600",
     description: "不动产登记、房产过户、抵押登记等",
+    avgServiceMinutes: 15,
   },
   {
     code: "household",
@@ -35,6 +39,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "E",
     color: "bg-violet-600",
     description: "户口迁移、身份证办理、户籍证明等",
+    avgServiceMinutes: 6,
   },
   {
     code: "civil",
@@ -42,6 +47,7 @@ export const BUSINESS_TYPES: BusinessType[] = [
     prefix: "F",
     color: "bg-cyan-600",
     description: "婚姻登记、社会救助、优抚安置等",
+    avgServiceMinutes: 7,
   },
 ];
 
